@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include "functions.h"
 
-int    loops(point **tab)
+void    loops(point **tab, int max, int dist)
 {
     int     i;
     int     j;
     int     max;
     int     current;
+    int     dist;
 
     max = 0;
     i = 0;
@@ -14,15 +15,12 @@ int    loops(point **tab)
     j = 0;
         while (tab[i][j].visited != 0 && j < g_size_y)
         {
-            current = find_square(i, j, tab);
-            if (current > max)
-            max = current;
+            find_square(i, j, tab, &max, &dist);
             i++;
         }
-        return (max);
 }
 
-int    find_square(int index_x, int index_y, point **tab)
+void    find_square(int index_x, int index_y, point **tab, int max, int dist)
 {
     int y_min;
     int y_min_pre;
@@ -41,6 +39,7 @@ int    find_square(int index_x, int index_y, point **tab)
     if (y_min < x)
         x--;
     i = 0;
+    
     while (i < x)
     {
         j = 0;
@@ -53,7 +52,7 @@ int    find_square(int index_x, int index_y, point **tab)
     return (x);
 }
 
-void    print_board(int x, point **tab)
+void    print_board(int x, point **tab, int dist)
 {
     int i;
     int j;
@@ -81,14 +80,17 @@ void    print_board(int x, point **tab)
                 i += 0;
             j++;
         }
+        write(1, "\n", 1);
         i++;
     }
+    write(1, )
 }
 
 void    find_main(point **tab)
 {
     int size;
+    int dist;
 
-    size = loops(tab);
-    print_board(size, tab);
+    loops(tab, size, dist);
+    print_board(size, tab, dist);
 }
