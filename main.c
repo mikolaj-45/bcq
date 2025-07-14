@@ -6,7 +6,12 @@ int main(int argc, char **argv)
     i = 1;
     while (i < argc)
     {
+        if (i != 1)
+            write(1, "\n", 1);
+        
         //copy board
+        
         find_main();
+        i++;
     }
 }
