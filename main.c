@@ -7,6 +7,6 @@ int main(int argc, char **argv)
     while (i < argc)
     {
         //copy board
-        
+        find_main();
     }
 }

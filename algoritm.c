@@ -1,16 +1,5 @@
 #include <stdio.h>
-
-int g_size_x;
-int g_size_y;
-char    empty;
-char    obsticle;
-char    full;
-
-typedef struct point
-{
-    int obs_y;
-    int visited;
-} point;
+#include "functions.h"
 
 int    loops(point **tab)
 {
@@ -69,16 +58,21 @@ void    print_board(int x, point **tab)
     int i;
     int j;
     int start;
+    int found;
 
     i = 0;
     start = 0;
+    found = 0;
     while (i < g_size_x)
     {
         j = start;
         while (j < g_size_y)
         {
-            if (tab[i][j].visited == x && start == 0)
+            if (tab[i][j].visited == x && found == 0)
+            {
                 start = j;
+                found++;
+            }
             if (start != 0 && j - start < x)
                 //wypisz pelne pole
                 i += 0;
@@ -89,4 +83,12 @@ void    print_board(int x, point **tab)
         }
         i++;
     }
+}
+
+void    find_main(point **tab)
+{
+    int size;
+
+    size = loops(tab);
+    print_board(size, tab);
 }
