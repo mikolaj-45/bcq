@@ -74,10 +74,9 @@ void    print_board(int x, point **tab)
     start = 0;
     while (i < g_size_x)
     {
-        j = 0;
+        j = start;
         while (j < g_size_y)
         {
-            j = start;
             if (tab[i][j].visited == x && start == 0)
                 start = j;
             if (start != 0 && j - start < x)
