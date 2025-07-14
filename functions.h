@@ -10,15 +10,15 @@ typedef struct point
     int visited;
 } point;
 
-int g_size_x;
-int g_size_y;
+int     g_size_x;
+int     g_size_y;
 char    g_empty;
 char    g_obsticle;
 char    g_full;
 
-int    loops(point **tab);
-int    find_square(int index_x, int index_y, point **tab);
-void    print_board(int x, point **tab);
+void    loops(point **tab, int max, int dist);
+void    find_square(int index_x, int index_y, point **tab, int max, int dist);
+void    print_board(int x, point **tab, int dist);
 void    find_main(point **tab);
 
 #endif
