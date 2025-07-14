@@ -10,8 +10,12 @@ int main(int argc, char **argv)
             write(1, "\n", 1);
         
         //copy board
-        
+
         find_main();
         i++;
+    }
+    if (argc == 1)
+    {
+        
     }
 }
