@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "functions.h"
+#include "point.h"
 
 void    loops(point **tab, int *max, int *dist)
 {
@@ -9,12 +10,15 @@ void    loops(point **tab, int *max, int *dist)
 
     i = 0;
     while (i < g_size_x)
+    {
     j = 0;
         while (tab[i][j].visited != 0 && j < g_size_y)
         {
-            find_square(i, j, tab, &max, &dist);
-            i++;
+            find_square(i, j, tab, max, dist);
+            j++;
         }
+        i++;
+    }
 }
 
 void    find_square(int index_x, int index_y, point **tab, int *max, int *dist)
@@ -48,6 +52,7 @@ void    find_square(int index_x, int index_y, point **tab, int *max, int *dist)
             tab[i + index_x][j + index_y].visited = x;
             j++;
         }
+        i++;
     }
     if (x > *max || (x == *max && d < *dist))
     {
@@ -75,12 +80,15 @@ void    print_board(int x, point **tab, int dist)
             {
                 start = j;
                 found++;
+                write(1, &g_full, 1);
             }
             if (start != 0 && j - start < x)
-                i += 0;
+                write(1, &g_full, 1);
             else 
-                //wypisz pole
-                i += 0;
+                if (tab[i][j].visited == -1)
+                    write(1, &g_obsticle, 1);
+                else
+                    write(1, &g_empty, 1);
             j++;
         }
         write(1, "\n", 1);
@@ -90,9 +98,9 @@ void    print_board(int x, point **tab, int dist)
 
 void    find_main(point **tab)
 {
-    int size;
-    int dist;
+    int *size;
+    int *dist;
 
-    loops(tab, &size, &dist);
-    print_board(size, tab, dist);
+    loops(tab, size, dist);
+    print_board(*size, tab, *dist);
 }

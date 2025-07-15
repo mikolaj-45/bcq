@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         }
         //copy board
 
-        //find_main();
+        find_main(map);
         free_map(map, g_size_y);
         k++;
     }
