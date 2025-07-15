@@ -6,6 +6,8 @@
 int main(int argc, char **argv)
 {
     int k;
+    int i;
+    int j;
 
     k = 1;
     while (k < argc)
@@ -17,27 +19,11 @@ int main(int argc, char **argv)
         {
             write(1, "map error\n", 10);
             k++;
-            continue;
+            continue ;
         }
-        int i;
-        int j;
         i = 0;
-        j = 0;
         printf("%d %d\n", g_size_x, g_size_y);
-        while (i < g_size_y)
-        {
-            j = 0;
-            while (j < g_size_x)
-            {
-                if (map[i][j].visited == -1)
-                    write(1, "o", 1);
-                else
-                    write(1, ".", 1);
-                j++;
-            }
-            write(1, "\n", 1);
-            i++;
-        }
+        print_map(map, g_size_x, g_size_y);
         //copy board
 
         find_main(map);

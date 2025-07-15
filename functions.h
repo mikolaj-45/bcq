@@ -17,6 +17,7 @@ void    print_board(int x, point **tab, int dist);
 void    find_main(point **tab);
 static int	read_file_to_buffer(char *filename, char *buffer);
 point **readmap(char *filename);
-void    free_map(point **map, int size);
+void print_map(point **map, int size_x, int size_y);
+void free_map(point **map, int lines);
 
 #endif

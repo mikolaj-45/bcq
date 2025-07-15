@@ -68,38 +68,27 @@ static int count_columns(char *buffer, int pos)
     return (columns);
 }
 
-static int fill_map_row(point *row, char *buffer, int pos, char *cfg)
+static int alloc_and_fill_row(point **row, char *buffer, int pos, int columns, char *cfg)
 {
     int x;
-    int columns;
     char c;
 
+    *row = malloc(sizeof(point) * columns);
+    if (!(*row))
+        return -1;
     x = 0;
-    columns = count_columns(buffer, pos);
     while (x < columns)
     {
         c = buffer[pos + x];
         if (c == cfg[1])
-        {
-            row[x].visited = -1;
-        }
+            (*row)[x].visited = -1;
         else if (c == cfg[0])
-        {
-            row[x].visited = 0;
-        }
+            (*row)[x].visited = 0;
+        else
+            return -1;
         x++;
     }
-    return (0);
-}
-
-static int alloc_and_fill_row(point **row, char *buffer, int pos, int columns, char *cfg)
-{
-    *row = malloc(sizeof(point) * columns);
-    if (!(*row))
-        return (-1);
-    if (fill_map_row(*row, buffer, pos, cfg) == -1)
-        return (-1);
-    return (0);
+    return 0;
 }
 
 point **readmap(char *filename)
@@ -133,18 +122,4 @@ point **readmap(char *filename)
         y++;
     }
     return (map);
-}
-
-void free_map(point **map, int lines)
-{
-	int i;
-
-	i = 0;
-	if (!map) return;
-	while (i < lines && map[i])
-	{
-		free(map[i]);
-		i++;
-	}
-	free(map);
 }
