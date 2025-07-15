@@ -77,9 +77,8 @@ void    print_board(int x, point **tab, int dist)
                 found++;
             }
             if (start != 0 && j - start < x)
-                //wypisz pelne pole
                 i += 0;
-            else
+            else 
                 //wypisz pole
                 i += 0;
             j++;
