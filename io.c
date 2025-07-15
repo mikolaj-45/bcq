@@ -14,10 +14,13 @@ char    g_full;
 
 static int	read_file_to_buffer(char *filename, char *buffer)
 {
-	int	fd = open(filename, O_RDONLY);
+	int fd;
+	int bytes;
+
+	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (-1);
-	int bytes = read(fd, buffer, BUF_SIZE - 1);
+	bytes = read(fd, buffer, BUF_SIZE - 1);
 	if (bytes < 0) {
 		close(fd);
 		return (-1);
@@ -27,67 +30,109 @@ static int	read_file_to_buffer(char *filename, char *buffer)
 	return (0);
 }
 
-point **readmap(char *filename)
+static int parse_map_header(char *buffer, int *lines, int *header_len, char *cfg)
 {
-    int x;
-	int y;
+    int i;
+    int j;
+    char lines_str[16];
 
-	x = 0;
-	y = 0;
-	char	buffer[BUF_SIZE];
-    if (read_file_to_buffer(filename, buffer) == -1)
-        return NULL;
-
-    int i = 0;
-    while (buffer[i] && buffer[i] != '\n') i++;
-    if (i < 4) return NULL;
-
-    int config_len = i;
-    char full = buffer[config_len - 1];
-    char obstacle = buffer[config_len - 2];
-    char empty = buffer[config_len - 3];
-
-    char lines_str[16] = {0};
-    for (int j = 0; j < config_len - 3 && j < 15; j++)
+    i = 0;
+    j = 0;
+    while (buffer[i] && buffer[i] != '\n')
+        i++;
+    if (i < 4)
+        return (-1);
+    *header_len = i;
+    cfg[2] = buffer[i - 1];
+    cfg[1] = buffer[i - 2];
+    cfg[0] = buffer[i - 3];
+    while (j < i - 3 && j < 15)
+    {
         lines_str[j] = buffer[j];
-    int lines = atoi(lines_str);
-    if (lines <= 0) return NULL;
-    g_size_y = lines;
+        j++;
+    }
+    lines_str[j] = '\0';
+    *lines = atoi(lines_str);
+    if (*lines <= 0)
+        return (-1);
+    return (0);
+}
 
-    int pos = i + 1;
-    int columns = 0;
+static int count_columns(char *buffer, int pos)
+{
+    int columns;
+
+	columns = 0;
     while (buffer[pos + columns] && buffer[pos + columns] != '\n')
         columns++;
-    g_size_x = columns;
-	point **map = malloc(sizeof(point *) * lines);
-    if (!map) return NULL;
-    while (y < lines) {
-        int row_columns = 0;
-        while (buffer[pos + row_columns] && buffer[pos + row_columns] != '\n')
-            row_columns++;
-        if (row_columns != g_size_x)
-            return NULL;
+    return (columns);
+}
 
-        map[y] = malloc(sizeof(point) * g_size_x);
-        if (!map[y]) return NULL;
-		x = 0;
-        while (x < columns)
-		{
-            char c = buffer[pos++];
-            if (c != empty && c != obstacle && c != full)
-                return NULL;
+static int fill_map_row(point *row, char *buffer, int pos, char *cfg)
+{
+    int x;
+    int columns;
+    char c;
 
-            map[y][x].obs_y = (c == obstacle) ? 1 : 0;
-            if (c == empty)
-                map[y][x].visited = 0;
-            else if (c == obstacle)
-                map[y][x].visited = -1;
-			x ++;
+    x = 0;
+    columns = count_columns(buffer, pos);
+    while (x < columns)
+    {
+        c = buffer[pos + x];
+        if (c == cfg[1])
+        {
+            row[x].visited = -1;
         }
-        if (buffer[pos] == '\n') pos++;
+        else if (c == cfg[0])
+        {
+            row[x].visited = 0;
+        }
+        x++;
+    }
+    return (0);
+}
+
+static int alloc_and_fill_row(point **row, char *buffer, int pos, int columns, char *cfg)
+{
+    *row = malloc(sizeof(point) * columns);
+    if (!(*row))
+        return (-1);
+    if (fill_map_row(*row, buffer, pos, cfg) == -1)
+        return (-1);
+    return (0);
+}
+
+point **readmap(char *filename)
+{
+    char buffer[BUF_SIZE];
+    char cfg[3];
+    int lines;
+    int header_len;
+
+    if (read_file_to_buffer(filename, buffer) == -1)
+        return (NULL);
+    if (parse_map_header(buffer, &lines, &header_len, cfg) == -1)
+        return (NULL);
+    g_size_y = lines;
+    int pos = header_len + 1;
+    int columns = count_columns(buffer, pos);
+    g_size_x = columns;
+    point **map = malloc(sizeof(point *) * lines);
+    if (!map)
+        return (NULL);
+    int y = 0;
+    while (y < lines)
+    {
+        if (count_columns(buffer, pos) != columns)
+            return (NULL);
+        if (alloc_and_fill_row(&map[y], buffer, pos, columns, cfg) == -1)
+            return (NULL);
+        pos += columns;
+        if (buffer[pos] == '\n')
+            pos++;
         y++;
     }
-    return map;
+    return (map);
 }
 
 void free_map(point **map, int lines)
