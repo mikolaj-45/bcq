@@ -15,6 +15,7 @@ void    loops(point **tab);
 void	give_value(point **tab, int index_x, int index_y, int x);
 void    find_square(int index_x, int index_y, point **tab);
 void    print_board(point **tab);
+void	find_obs(point **t);
 void    find_main(point **tab);
 point **readmap(char *filename);
 void print_map(point **map, int size_x, int size_y);
