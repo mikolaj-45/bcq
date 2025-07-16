@@ -2,6 +2,36 @@
 #include "functions.h"
 #include "point.h"
 
+void    find_obs(point **t)
+{
+    int i;
+    int j;
+    int k;
+
+    i = 0;
+    printf("aaa");
+    while (i < g_size_y)
+    {
+        j = 0;
+        while (j < g_size_x)
+        {
+            if (t[i][j].visited == -1)
+                t[i][j].obs_y = -1;
+            else
+            {
+                k = 1;
+                while (t[i + k][j].visited != -1 && (i + k) < g_size_y)
+                    k++;
+                t[i][j].obs_y = k;
+                printf("obs = %d", t[i][j].obs_y);
+            }
+            j++;
+        }
+        i++;
+        printf("\n");
+    }
+}
+
 void    loops(point **tab, int *max, int *dist)
 {
     int     i;
@@ -101,6 +131,7 @@ void    find_main(point **tab)
     int *size;
     int *dist;
 
+    printf("aaa");
     loops(tab, size, dist);
     print_board(*size, tab, *dist);
 }

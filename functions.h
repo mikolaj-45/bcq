@@ -20,4 +20,5 @@ point **readmap(char *filename);
 void print_map(point **map, int size_x, int size_y);
 void free_map(point **map, int lines);
 
+
 #endif
