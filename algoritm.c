@@ -2,6 +2,36 @@
 #include "functions.h"
 #include "point.h"
 
+void    find_obs(point **t)
+{
+    int i;
+    int j;
+    int k;
+
+    i = 0;
+    printf("aaa");
+    while (i < g_size_y)
+    {
+        j = 0;
+        while (j < g_size_x)
+        {
+            if (t[i][j].visited == -1)
+                t[i][j].obs_y = -1;
+            else
+            {
+                k = 1;
+                while (t[i + k][j].visited != -1 && (i + k) < g_size_y)
+                    k++;
+                t[i][j].obs_y = k;
+                printf("obs = %d", t[i][j].obs_y);
+            }
+            j++;
+        }
+        i++;
+        printf("\n");
+    }
+}
+
 void    loops(point **tab, int *max, int *dist)
 {
     int     i;
@@ -31,10 +61,10 @@ void    find_square(int index_x, int index_y, point **tab, int *max, int *dist)
 
     x = 0;
     y_min = 1000000000;
-    while (x < y_min && x + index_x < g_size_x && tab[index_x + x][index_y].visited == 0)
+    while (x < y_min && (x + index_x) < g_size_x && tab[index_x + x][index_y].visited == 0)
     {
-        if (tab[index_x + x][index_y].obs_y < y_min)
-            y_min = tab[index_x + x][index_y].obs_y;
+        if (tab[index_y][index_x + x].obs_y < y_min)
+            y_min = tab[index_y][index_x + x].obs_y;
         x++;
     }
     if (y_min < x)
@@ -49,7 +79,7 @@ void    find_square(int index_x, int index_y, point **tab, int *max, int *dist)
         j = 0;
         while (j < x)
         {
-            tab[i + index_x][j + index_y].visited = x;
+            tab[j + index_y][i + index_x].visited = x;
             j++;
         }
         i++;
@@ -71,10 +101,10 @@ void    print_board(int x, point **tab, int dist)
     i = 0;
     start = 0;
     found = 0;
-    while (i < g_size_x)
+    while (i < g_size_y)
     {
         j = start;
-        while (j < g_size_y)
+        while (j < g_size_x)
         {
             if (tab[i][j].visited == x && found == 0 && (dist == i || dist == j))
             {
@@ -101,6 +131,7 @@ void    find_main(point **tab)
     int *size;
     int *dist;
 
+    printf("aaa");
     loops(tab, size, dist);
     print_board(*size, tab, *dist);
 }

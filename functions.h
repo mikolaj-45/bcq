@@ -20,4 +20,5 @@ void print_map(point **map, int size_x, int size_y);
 void free_map(point **map, int lines);
 int ft_atoi(char *str);
 
+
 #endif
