@@ -75,7 +75,7 @@ static int alloc_and_fill_row(point **row, char *buffer, int pos, int columns, c
 
     *row = malloc(sizeof(point) * columns);
     if (!(*row))
-        return -1;
+        return (-1);
     x = 0;
     while (x < columns)
     {
@@ -85,10 +85,10 @@ static int alloc_and_fill_row(point **row, char *buffer, int pos, int columns, c
         else if (c == cfg[0])
             (*row)[x].visited = 0;
         else
-            return -1;
+            return (-1);
         x++;
     }
-    return 0;
+    return (0);
 }
 
 point **readmap(char *filename)
