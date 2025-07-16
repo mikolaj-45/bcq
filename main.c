@@ -6,8 +6,6 @@
 int main(int argc, char **argv)
 {
     int k;
-    int i;
-    int j;
 
     k = 1;
     while (k < argc)
@@ -21,7 +19,6 @@ int main(int argc, char **argv)
             k++;
             continue ;
         }
-        i = 0;
         printf("%d %d\n", g_size_x, g_size_y);
         print_map(map, g_size_x, g_size_y);
         //copy board

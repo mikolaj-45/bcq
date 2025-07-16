@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <fcntl.h>
 #include "functions.h"
 #include "point.h"
 
@@ -12,18 +11,15 @@ char    g_empty;
 char    g_obsticle;
 char    g_full;
 
-static int	read_file_to_buffer(char *filename, char *buffer)
+
+static int	read_terminal_to_buffer(char *argv, char *buffer)
 {
 	int fd;
 	int bytes;
 
-	fd = open(filename, O_RDONLY);
+	fd = argv;
 	if (fd < 0)
-    {
-        write(1, "map error\n", 10);
-        return (-1);
-    }
-	bytes = read(fd, buffer, BUF_SIZE - 1);
+		return (-1);
 	if (bytes < 0) {
 		close(fd);
 		return (-1);
@@ -43,6 +39,8 @@ static int parse_map_header(char *buffer, int *lines, int *header_len, char *add
     j = 0;
     while (buffer[i] && buffer[i] != '\n')
         i++;
+    if (i < 4)
+        return (-1);
     *header_len = i;
     add_info[2] = buffer[i - 1];
     add_info[1] = buffer[i - 2];
@@ -54,11 +52,12 @@ static int parse_map_header(char *buffer, int *lines, int *header_len, char *add
     }
     lines_str[j] = '\0';
     *lines = atoi(lines_str);
-    is_valid(add_info, lines, *header_len);
+    if (*lines <= 0)
+        return (-1);
     return (0);
 }
 
-int count_columns(char *buffer, int pos)
+static int count_columns(char *buffer, int pos)
 {
     int columns;
 
@@ -68,14 +67,14 @@ int count_columns(char *buffer, int pos)
     return (columns);
 }
 
-int alloc_and_fill_row(point **row, char *buffer, int pos, rowinfo info)
+static int alloc_and_fill_row(point **row, char *buffer, int pos, rowinfo info)
 {
     int x;
     char c;
 
     *row = malloc(sizeof(point) * info.columns);
     if (!(*row))
-        return (-1);
+        return -1;
     x = 0;
     while (x < info.columns)
     {
@@ -85,7 +84,7 @@ int alloc_and_fill_row(point **row, char *buffer, int pos, rowinfo info)
         else if (c == info.add_info[0])
             (*row)[x].visited = 0;
         else
-            return (-1);
+            return -1;
         x++;
     }
     return 0;
@@ -99,10 +98,7 @@ point **readmap(char *filename)
     int header_len;
 
     if (read_file_to_buffer(filename, buffer) == -1)
-    {
-        write(1, "map error\n", 10);
-        return (NULL);  
-    }
+        return (NULL);
     if (parse_map_header(buffer, &lines, &header_len, add_info) == -1)
         return (NULL);
     g_size_y = lines;
@@ -116,7 +112,17 @@ point **readmap(char *filename)
     rowinfo info;
     info.columns = columns;
     info.add_info = add_info;
-    if (fill_map(map, buffer, pos, lines, columns, info) == -1)
-        return (NULL);
+
+    while (y < lines)
+    {
+        if (count_columns(buffer, pos) != columns)
+            return NULL;
+        if (alloc_and_fill_row(&map[y], buffer, pos, info) == -1)
+            return NULL;
+        pos += columns;
+        if (buffer[pos] == '\n')
+            pos++;
+        y++;
+    }
     return (map);
 }

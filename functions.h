@@ -19,6 +19,11 @@ point **readmap(char *filename);
 void print_map(point **map, int size_x, int size_y);
 void free_map(point **map, int lines);
 int ft_atoi(char *str);
+int is_valid(char *add_info, int *lines, int header_len);
+int fill_map(point **map, char *buffer, int pos, int lines, int columns, rowinfo info);
+int alloc_and_fill_row(point **row, char *buffer, int pos, rowinfo info);
+int count_columns(char *buffer, int pos);
+
 
 
 #endif

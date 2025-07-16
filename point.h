@@ -7,4 +7,9 @@ typedef struct point
     int visited;
 } point;
 
+typedef struct s_rowinfo {
+    int columns;
+    char *add_info;
+} rowinfo;
+
 #endif
