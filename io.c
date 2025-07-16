@@ -12,25 +12,48 @@ char    g_empty;
 char    g_obsticle;
 char    g_full;
 
-static int	read_file_to_buffer(char *filename, char *buffer)
+static int	read_file_to_buffer(char *filename, char **buffer)
 {
-	int fd;
-	int bytes;
+    int fd;
+    int size;
+    int len;
+    char *buf;
+    char c;
 
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
+    fd = open(filename, O_RDONLY);
+    if (fd < 0)
+        return -1;
+    size = 1024;
+    len = 0;
+    buf = malloc(size);
+    if (!buf)
     {
-        write(1, "map error\n", 10);
-        return (-1);
+        close(fd);
+        return -1;
     }
-	bytes = read(fd, buffer, BUF_SIZE - 1);
-	if (bytes < 0) {
-		close(fd);
-		return (-1);
-	}
-	buffer[bytes] = '\0';
-	close(fd);
-	return (0);
+    while (read(fd, &c, 1) == 1)
+    {
+        if (len + 1 >= size)
+        {
+            char *new_buf = malloc(size * 2);
+            if (!new_buf)
+            {
+                free(buf);
+                close(fd);
+                return -1;
+            }
+            for (int i = 0; i < len; i++)
+                new_buf[i] = buf[i];
+            free(buf);
+            buf = new_buf;
+            size *= 2;
+        }
+        buf[len++] = c;
+    }
+    buf[len] = '\0';
+    *buffer = buf;
+    close(fd);
+    return 0;
 }
 
 static int parse_map_header(char *buffer, int *lines, int *header_len, char *add_info)
@@ -93,16 +116,13 @@ int alloc_and_fill_row(point **row, char *buffer, int pos, rowinfo info)
 
 point **readmap(char *filename)
 {
-    char buffer[BUF_SIZE];
+    char *buffer;
     char add_info[3];
     int lines;
     int header_len;
 
-    if (read_file_to_buffer(filename, buffer) == -1)
-    {
-        write(1, "map error\n", 10);
-        return (NULL);  
-    }
+    if (read_file_to_buffer(filename, &buffer) == -1)
+        return NULL;
     if (parse_map_header(buffer, &lines, &header_len, add_info) == -1)
         return (NULL);
     g_size_y = lines;
