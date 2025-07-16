@@ -11,9 +11,9 @@ extern char    g_empty;
 extern char    g_obsticle;
 extern char    g_full;
 
-void    loops(point **tab, int *max, int *dist);
-void    find_square(int index_x, int index_y, point **tab, int *max, int *dist);
-void    print_board(int x, point **tab, int dist);
+void    loops(point **tab);
+void    find_square(int index_x, int index_y, point **tab);
+void    print_board(point **tab);
 void    find_main(point **tab);
 point **readmap(char *filename);
 void print_map(point **map, int size_x, int size_y);

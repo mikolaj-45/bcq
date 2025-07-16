@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         print_map(map, g_size_x, g_size_y);
         //copy board
 
-        printf("aaaaaaaaaaaaaa");
+        printf("aaa\n");
         find_main(map);
         free_map(map, g_size_y);
         k++;

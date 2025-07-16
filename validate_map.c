@@ -21,6 +21,7 @@ int    is_valid(char *add_info, int *lines, int header_len)
         write(1, "map error\n", 10);
         return (-1);    
     }
+    return (0);
 }
 
 int fill_map(point **map, char *buffer, int pos, int lines, int columns, rowinfo info)
