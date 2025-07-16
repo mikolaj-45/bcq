@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   io.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: emurbane <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/16 19:45:52 by emurbane          #+#    #+#             */
+/*   Updated: 2025/07/16 19:57:51 by emurbane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #define BUF_SIZE 10000
 #include <unistd.h>
 #include <stdlib.h>
@@ -6,16 +18,16 @@
 #include "functions.h"
 #include "point.h"
 
-int     g_size_x;
-int     g_size_y;
-char    g_empty;
-char    g_obsticle;
-char    g_full;
+int	g_size_x;
+int	g_size_y;
+char	g_empty;
+char	g_obsticle;
+char	g_full;
 
 static int	read_file_to_buffer(char *filename, char *buffer)
 {
-	int fd;
-	int bytes;
+	int	fd;
+	int	bytes;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
