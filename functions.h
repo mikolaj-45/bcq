@@ -12,6 +12,7 @@ extern char    g_obsticle;
 extern char    g_full;
 
 void    loops(point **tab);
+void	give_value(point **tab, int index_x, int index_y, int x);
 void    find_square(int index_x, int index_y, point **tab);
 void    print_board(point **tab);
 void    find_main(point **tab);
