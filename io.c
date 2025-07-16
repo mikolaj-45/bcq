@@ -28,6 +28,10 @@ static int	read_file_to_buffer(char *filename, char **buffer)
 {
 	int fd;
 	int bytes;
+    int size;
+    char *buf;
+    char c;
+    int len;    
 
     fd = open(filename, O_RDONLY);
     if (fd < 0)
